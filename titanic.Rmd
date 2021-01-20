@@ -42,6 +42,7 @@ first_plot_count <-
   ggplot(aes(Pclass, fill = factor(Survived))) +
   geom_bar() +
   facet_wrap(~ Sex)
+first_plot_count
 ```
 
 # Observation: 
@@ -69,6 +70,7 @@ first_plot_prop <-
   ggplot(aes(Pclass, fill = factor(Survived))) +
   geom_bar(position = 'fill') +
   facet_wrap(~ Sex)
+first_plot_prop
 ```
 
 # Observation:
@@ -86,6 +88,7 @@ first_table_of_prop <-
   spread(Sex, n) %>%
   mutate(female_prop = (female / (female + male)) *100) %>% 
   mutate(male_prop = (male / (female + male)) *100)
+first_table_of_prop
 ```
 
 # Observation:
@@ -110,6 +113,7 @@ second_plot_count <-
   ggplot(aes(Sex, fill = factor(Survived))) +
   geom_bar() +
   facet_wrap(~ Pclass)
+second_plot_count
 ```
 
 # Observation:
@@ -131,6 +135,7 @@ second_plot_prop <-
   ggplot(aes(Sex, fill = factor(Survived))) +
   geom_bar(position = 'fill') +
   facet_wrap(~ Pclass)
+second_plot_prop
 ```
 
 # Observation:
@@ -156,6 +161,7 @@ second_table_of_prop <-
   count(Pclass, Survived, Sex) %>%
   spread(Survived, n) %>%
   mutate(prop_passenger_in_class = (`1` / (`1` + `0`)) * 100)
+second_table_of_prop
 ```
 
 # Observation:
@@ -186,6 +192,7 @@ third_plot_count <-
   ggplot(aes(factor(Fare), fill = factor(Survived))) +
   geom_bar() +
   facet_wrap(~ Pclass)
+third_plot_count
 ```
 
 # Observation:
@@ -217,6 +224,7 @@ third_plot_prop <-
   ggplot(aes(factor(Fare), fill = factor(Survived))) +
   geom_bar(position = 'fill') +
   facet_wrap(~ Pclass)
+third_plot_prop
 ```
 
 # Observation:
@@ -245,6 +253,7 @@ third_table_of_prop <-
              !is.na(`1`) ~ `1`
            )) %>%
   mutate(survived_prop = (`1` / (`1` + `0`)) * 100)
+third_table_of_prop
 ```
 
 # Observation:
@@ -274,6 +283,7 @@ fourth_plot_count <-
   ggplot(aes(Pclass, fill = factor(Survived))) +
   geom_bar() +
   facet_wrap(~ Fare)
+fourth_plot_count
 ```
 
 # Observation:
@@ -301,6 +311,7 @@ fourth_plot_prop <-
   ggplot(aes(Pclass, fill = factor(Survived))) +
   geom_bar(position = 'fill') +
   facet_wrap(~ Fare)
+fourth_plot_prop
 ```
 
 # Observation:
@@ -329,6 +340,7 @@ fourth_table_of_prop <-
              !is.na(`1`) ~ `1`
            )) %>%
   mutate(surv_prop = (`1` / (`1` + `0`)) * 100)
+fourth_table_of_prop
 ```
 
 # Observation:
@@ -361,6 +373,7 @@ fifth_plot_count <-
   ggplot(aes(factor(Fare), fill = factor(Survived))) +
   geom_bar() +
   facet_wrap(~ Sex)
+fifth_plot_count
 ```
 
 # Obsevation:
@@ -387,6 +400,7 @@ fifth_plot_prop <-
   ggplot(aes(factor(Fare), fill = factor(Survived))) +
   geom_bar(position = 'fill') +
   facet_wrap(~ Sex)
+fifth_plot_prop
 ```
 
 # Observation:
@@ -403,6 +417,7 @@ fifth_table_of_prop <-
   count(Sex, Fare, Survived) %>%
   spread(Survived, n) %>%
   mutate(prop = `1` / (`1` + `0`) * 100)
+fifth_table_of_prop
 ```
 
 # Observation:
@@ -425,6 +440,7 @@ sixth_plot_count <-
   ggplot(aes(Sex, fill = factor(Survived))) +
   geom_bar() +
   facet_wrap(~ Fare)
+sixth_plot_count
 ```
 
 # Obsevation:
@@ -449,6 +465,7 @@ sixth_plot_prop <-
   ggplot(aes(Sex, fill = factor(Survived))) +
   geom_bar(position = 'fill') +
   facet_wrap(~ Fare)
+sixth_plot_prop
 ```
 
 # Observation:
@@ -476,6 +493,7 @@ sixth_table_of_prop <-
              !is.na(`1`) ~ `1`
            )) %>%
   mutate(prop = (`1` / (`1` + `0`)) * 100)
+sixth_table_of_prop
 ```
 
 # Observation:
@@ -497,6 +515,7 @@ seventh_plot_count <-
   ggplot(aes(factor(Fare), fill = factor(Sex))) +
   geom_bar() +
   facet_wrap(~ Pclass)
+seventh_plot_count
 ```
 
 # Observation:
@@ -520,6 +539,7 @@ seventh_plot_prop <-
   ggplot(aes(factor(Fare), fill = factor(Sex))) +
   geom_bar(position = 'fill') +
   facet_wrap(~ Pclass)
+seventh_plot_prop
 ```
 
 # Observation:
@@ -544,6 +564,7 @@ seventh_table_of_prop <-
            )) %>%
   mutate(prop_female = (`female` / (`female` + `male`) * 100)) %>% 
   mutate(prop_male = (`male` / (`female` + `male`) * 100))
+seventh_table_of_prop
 ```
 
 # Observation:
@@ -576,6 +597,7 @@ eighth_plot_count <-
   ggplot(aes(factor(Sex), fill = factor(Fare))) +
   geom_bar() +
   facet_wrap(~ Pclass)
+eighth_plot_count
 ```
 
 # Observation
@@ -605,6 +627,7 @@ eighth_plot_prop <-
   ggplot(aes(factor(Sex), fill = factor(Fare))) +
   geom_bar(position = 'fill') +
   facet_wrap(~ Pclass)
+eighth_plot_prop
 ```
 
 # Observation:
@@ -627,6 +650,7 @@ eighth_table_of_prop <-
   mutate(prop_fare1 = (`[0,8.66]` / (`[0,8.66]` + `(8.66,26]` + `(26,512]`)) * 100) %>%
   mutate(prop_fare2 = (`(8.66,26]` / (`[0,8.66]` + `(8.66,26]` + `(26,512]`)) * 100) %>%
   mutate(prop_fare3 = (`(26,512]` / (`[0,8.66]` + `(8.66,26]` + `(26,512]`)) * 100)
+eighth_table_of_prop
 ```
 
 # Observation:
