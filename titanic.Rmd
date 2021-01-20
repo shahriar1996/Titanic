@@ -1,0 +1,648 @@
+---
+title: "titanic"
+output: html_document
+---
+
+Analysis of  the relationships between class, gender, fare, and survival on
+The Titanic in the form of a narrative.
+
+Load tidyverse library
+```{r}
+library(tidyverse)
+```
+
+Read in data from train.csv and assign it to variable called "train"
+
+```{r}
+train <- read_csv('train.csv')
+train
+```
+
+
+We are going to observe three dimensional relationship from our train table and
+describe the meaning of each relation we create.
+
+Relationships should be expressed in three ways: as a three-dimensional bar plot
+of counts as a three-dimensional bar plot of proportions, and then and as table
+of proportions
+
+First of all, for each pair of variables among class, gender, and fare, we are
+going to analyze the relationship of survival to that pair count
+
+#################Comparison###########
+####Survival with Class & Gender######
+######################################
+
+I want to create two separate graphs of male and female, and will observe the
+relation between class and Gender with survival.
+
+```{r}
+first_plot_count <-
+  train %>%
+  ggplot(aes(Pclass, fill = factor(Survived))) +
+  geom_bar() +
+  facet_wrap(~ Sex)
+```
+
+# Observation: 
+If we compare female and male graph, it is clear that in all three classes,
+survival rate for female is much higher than male.
+
+Female graph: We see that almost all the female passenger survive from class1
+and class2, and almost half of the female passenger of class3 survived.
+
+Male graph: We see that male passenger in class1 survived the most. Male
+passenger in class2 has second highest survival rate and class3 has the least.
+
+Just by looking at male graph, it looks like male survived less in class2 than
+class3, but it should be considered that in class3 there are three times more
+passengers than class2. We can assure which class has more survival rate if we
+look at the graph of proportion of the survival rate.
+
+After my prior observation, I want to see the actual proportion of survival
+rate in two graphs for both male and female which will confirm my visual
+explanation.
+
+```{r}
+first_plot_prop <-
+  train %>%
+  ggplot(aes(Pclass, fill = factor(Survived))) +
+  geom_bar(position = 'fill') +
+  facet_wrap(~ Sex)
+```
+
+# Observation:
+The survival proportion of female passengers in all three classes is higher than
+the survival proportion of male passengers. Or we can say in each class more
+female passengers have survived than male passengers.
+
+I want to create a table which will give me the exact proportion of survival
+rate for male and female.
+
+```{r}
+first_table_of_prop <-
+  train %>%
+  count(Pclass, Survived, Sex) %>%
+  spread(Sex, n) %>%
+  mutate(female_prop = (female / (female + male)) *100) %>% 
+  mutate(male_prop = (male / (female + male)) *100)
+```
+
+# Observation:
+The proportion of survived female passenger in class1 is 66.9%
+The proportion of survived female passenger in class2 is 80.5%
+The proportion of survived female passenger in class3 is 60.5%
+
+The proportion of survived male passenger in class1 is 33.1%
+The proportion of survived male passenger in class2 is 19.5%
+The proportion of survived male passenger in class3 is 39.5%
+
+###########Comparison###########
+##Survival with Gender & Class##
+################################
+
+I want to create three graphs of all classes, and will observe the relation
+between Gender and class with survival.
+
+```{r}
+second_plot_count <-
+  train %>%
+  ggplot(aes(Sex, fill = factor(Survived))) +
+  geom_bar() +
+  facet_wrap(~ Pclass)
+```
+
+# Observation:
+People is class1 has higher survival rate than people in class2 and finally
+survival rate for class3 is the least. 
+
+Female graph: Most of the female in class1 and class2 have survived where only
+half of the female survived in class3. 
+
+Male graph: Less than 50% of male survived in class1. In class2, one fourth of
+male survived. In class3 survival rate is the least.
+
+
+After my prior observation, I want to see the actual proportion of survival rate 
+in all three classes which will confirm my visual explaination.
+```{r}
+second_plot_prop <-
+  train %>%
+  ggplot(aes(Sex, fill = factor(Survived))) +
+  geom_bar(position = 'fill') +
+  facet_wrap(~ Pclass)
+```
+
+# Observation:
+For both graphs we see that the proportion of survival is higher in class1, 
+then class2, and finally class3.
+
+In class1, survival proportion of female is 2 times higher than survival
+proportion of male. 
+
+In class2, survival proportion of female is almost 4 times higher than
+survival proportion of male.
+
+In class3, survival proportion of female is almost 3 times higher than
+survival proportion of male.
+
+Among three classes, survival proportion of female is much higher than the
+survival proportion of female.
+
+# table prop
+```{r}
+second_table_of_prop <-
+  train %>%
+  count(Pclass, Survived, Sex) %>%
+  spread(Survived, n) %>%
+  mutate(prop_passenger_in_class = (`1` / (`1` + `0`)) * 100)
+```
+
+# Observation:
+
+# In class1: 
+Proportion of female who survived is 96.8%
+Proportion of male who survived is 36.9%
+
+# In class2: 
+Proportion of female who survived is 92.1%
+Proportion of male who survived is 15.7%
+
+# In class3: 
+Proportion of female who survived is 50%
+Proportion of male who survived is 13.5%
+
+
+###########Comparison###########
+###Survival with Fare & Class###
+################################
+
+I want to create three separate graphs of all three classes, and will observe
+the relation between fare and class with survival.
+```{r}
+third_plot_count <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(factor(Fare), fill = factor(Survived))) +
+  geom_bar() +
+  facet_wrap(~ Pclass)
+```
+
+# Observation:
+I have broke fare in three intervals, so that it will be easy for us to
+visualize the graph.
+
+# In class1: passengers who paid the fare 
+between $0 to $8.66: none of them survived.
+between $8.66 to $26: a small portion of them survived.
+between $26 to $512: looks like almost 75% of the passengers suvived.
+
+# In class2: passengers who paid the fare 
+between $0 to $8.66: none of them survived.
+between $8.66 to $26: 50% of the passengers suvived.
+between $26 to $512: looks like almost 65% of the passengers suvived.
+
+# In class3: passengers who paid the fare 
+between $0 to $8.66: looks like one fourth of them survived.
+between $8.66 to $26: less than 50% of the passengers suvived.
+between $26 to $512: looks like almost 15-20% of the passengers suvived.
+
+After my prior observation, I want to see the actual proportion of survival
+rate among three graphs for all three classes which will confirm my visual
+explaination.
+```{r}
+third_plot_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(factor(Fare), fill = factor(Survived))) +
+  geom_bar(position = 'fill') +
+  facet_wrap(~ Pclass)
+```
+
+# Observation:
+Fare $0 to $8.66: In class1 and class2, no passengers were survived who paid
+the fare between $0 to $8.66; while in class3 we see almost 20% passengers
+survived by paying the same amount of fare.
+
+Fare $8.66 to $26: In class2 passenger who paid the fare between $8.66 to $26
+has the highest survival percentage than class1 and class3.
+
+Fare $26 to $512: In class1 passenger who paid the fare between $26 to $512
+has the highest survival percentage than class2 and class3.
+
+
+I want to create a table which will give me the exact proportion of survival
+rate for all passengers in three classes.
+```{r}
+third_table_of_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  count(Pclass, Fare, Survived) %>%
+  spread(Survived, n) %>%
+  mutate(`1` =
+           case_when(
+             is.na(`1`) ~ 0L,
+             !is.na(`1`) ~ `1`
+           )) %>%
+  mutate(survived_prop = (`1` / (`1` + `0`)) * 100)
+```
+
+# Observation:
+In class1, passenger who paid $0 to $8.66: 0% survival proportion.
+In class2, passenger who paid $8.66 to $26: 33.3% survival proportion.
+In class3, passenger who paid $0 to $8.66: 65.7% survival proportion.
+
+In class1, passenger who paid $0 to $8.66: 0% survival proportion.
+In class2, passenger who paid $8.66 to $26: 46% survival proportion.
+In class3, passenger who paid $0 to $8.66: 59% survival proportion.
+
+In class1, passenger who paid $0 to $8.66: 20.6% survival proportion.
+In class2, passenger who paid $8.66 to $26: 35% survival proportion.
+In class3, passenger who paid $0 to $8.66: 15.4% survival proportion.
+
+
+###########Comparison###########
+###Survival with Class & Fare###
+################################
+
+I want to create three separate graphs of three fare intervals, and will
+observe the relation between class and fare with survival.
+```{r}
+fourth_plot_count <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(Pclass, fill = factor(Survived))) +
+  geom_bar() +
+  facet_wrap(~ Fare)
+```
+
+# Observation:
+passengers who paid $0 to $8.66: In class1 and class2, none of them survived,
+however in class3 more than 50 passengers survived paying the same amount of
+fare.
+
+Passengers who paid $8.66 to $26: In class1, a very small number of passengers
+survived, however in class2 and class3 more than 50 passengers survived paying the same
+amount of fare.
+
+Passengers who paid $26 to $512: In class1, two third passengers survived. In
+class2, more than 50% passengers survived. And in class3 it has the least
+survival proportion even though the passengers paid the same amount of fare.
+
+We can say that passengers who paid more has the better survival chance.
+
+After my prior observation, I want to see the actual proportion of survival
+rate among three graphs for all three fare intervals which will confirm my
+# visual explaination.
+```{r}
+fourth_plot_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(Pclass, fill = factor(Survived))) +
+  geom_bar(position = 'fill') +
+  facet_wrap(~ Fare)
+```
+
+# Observation:
+Fare interval from $0 to $8.66: In class1 and class2, survival proportion is
+0%. In class3, survival proportion is near 23%.
+
+Fare interval from $8.66 to $26: In class1, survival proportion is around 30%.
+In class2, survival proportion is around 45%. In class3, survival proportion
+is around 32%.
+
+Fare interval from $26 to $512: In class1, survival proportion is around 65%.
+In class2, survival proportion is around 57%. In class3, survival proportion
+is the least and it's around 15%.
+
+I want to create a table which will give me the exact proportion of survival
+rate for all passengers with their different fare.
+```{r}
+fourth_table_of_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  count(Fare, Survived, Pclass) %>%
+  spread(Survived, n) %>%
+  mutate(`1` =
+           case_when(
+             is.na(`1`) ~ 0L,
+             !is.na(`1`) ~ `1`
+           )) %>%
+  mutate(surv_prop = (`1` / (`1` + `0`)) * 100)
+```
+
+# Observation:
+
+# Fare interval $0 to $8.66:
+In class1, survival proportion is 0%
+In class2, survival proportion is 0%
+In class3, survival proportion is 20.6%
+
+# Fare interval $8.66 to $26:
+In class1, survival proportion is 33.3%
+In class2, survival proportion is 46%
+In class3, survival proportion is 35%
+
+# Fare interval $26 to $512:
+In class1, survival proportion is 65.7%
+In class2, survival proportion is 59%
+In class3, survival proportion is 15.4%
+
+###########Comparison##########
+##Survival with Fare & Gender##
+###############################
+
+I want to create two separate graphs of male and female, and will
+observe the relation between fare and gender with survival.
+```{r}
+fifth_plot_count <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(factor(Fare), fill = factor(Survived))) +
+  geom_bar() +
+  facet_wrap(~ Sex)
+```
+
+# Obsevation:
+In the female graph, we see that more than 100 female passengers survive who
+paid between $26 to $512. Around 80 female passengers survived who paid
+between $8.66 to $26. More than 30 female passengers survived who paid between
+$0 to $8.66.
+
+In the male graph, we see that around 50 male passengers survive who
+paid between $26 to $512. Male passengers who paid the fare from $0 to $8.66
+and $8.66 to $512 has the same count for suvival.
+
+Paying the same amount of fare, female passengers survived more than the male
+passengers.
+
+
+After my prior observation, I want to see the actual proportion of survival
+rate between the two graphs for three fare intervals by which I can confirm my
+visual explaination.
+```{r}
+fifth_plot_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(factor(Fare), fill = factor(Survived))) +
+  geom_bar(position = 'fill') +
+  facet_wrap(~ Sex)
+```
+
+# Observation:
+We see that the survival rate is growing as the fare is increasing; however
+there is a huge difference in between male and female graph base on survival.
+
+
+I want to create a table which will give me the exact proportion of survival
+rate for male and female passengers in these three fare intervals.
+```{r}
+fifth_table_of_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  count(Sex, Fare, Survived) %>%
+  spread(Survived, n) %>%
+  mutate(prop = `1` / (`1` + `0`) * 100)
+```
+
+# Observation:
+In female graph: Survival rate is growing as the fare is increasing. Also
+survival rate is higher than death rate.
+
+In male graph: Survival rate is growing as the fare is increasing, but
+survival rate is less lower than death rate.
+
+###########Comparison##########
+##Survival with Gender & Fare##
+###############################
+
+I want to create graphs for three fare interval, and will
+observe the relation between fare and gender with survival.
+```{r}
+sixth_plot_count <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(Sex, fill = factor(Survived))) +
+  geom_bar() +
+  facet_wrap(~ Fare)
+```
+
+# Obsevation:
+Fare interval $0 to $8.66: Out of 50+ female passengers, more than half of
+them survived, while out of 250+ male passengers the survival count is less
+than female one.
+
+Fare interval $8.66 to $26: This is the reflection of first case; however the
+male passenger survival count is higher than the previous one.
+
+Fare interval $26 to $512: Out of almost 135 female passengers, more than 100
+of them survived, while out of almost 160 male passengers the survival count
+is a little over 50.
+
+After my prior observation, I want to see the actual proportion of survival
+rate among three fare intervals with gender by which I can confirm my visual
+explaination.
+```{r}
+sixth_plot_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(Sex, fill = factor(Survived))) +
+  geom_bar(position = 'fill') +
+  facet_wrap(~ Fare)
+```
+
+# Observation:
+We see that the female's survival rate in all three fare interval is higher
+than the male survival rate.
+
+By paying fare between $0 to $8.66, more than 50% of female passengers
+survived while male survived less than 10%.
+By paying fare between $8.66 to $26, close to 70% of female passengers
+survived while male survived little over 15%.
+By paying fare between $26 to $512, more than 75% of female passengers
+survived while male survived less than 30%.
+
+I want to create a table which will give me the exact proportion of survival
+rate for male and female passengers in these three fare intervals.
+```{r}
+sixth_table_of_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  count(Fare, Survived, Sex) %>%
+  spread(Survived, n) %>%
+  mutate(`1` =
+           case_when(
+             is.na(`1`) ~ 0L,
+             !is.na(`1`) ~ `1`
+           )) %>%
+  mutate(prop = (`1` / (`1` + `0`)) * 100)
+```
+
+# Observation:
+Fare paid between $0 to $8.66: Female survived 63%; male survived 10.6%
+Fare paid between $8.66 to $26: Female survived 69%; male survived 17%
+Fare paid between $26 to $512: Female survived 84%; male survived 33.5%
+
+
+##########Comparison##########
+###Gender with Fare & Class###
+##############################
+
+I want to create graphs for all three classes and break the fare in three fare
+interval, and will observe the relation between fare and class with gender.
+```{r}
+seventh_plot_count <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(factor(Fare), fill = factor(Sex))) +
+  geom_bar() +
+  facet_wrap(~ Pclass)
+```
+
+# Observation:
+
+In class1: passengers who paid $0 to $8.66, all of them are male.
+passengers who paid $8.66 to $26, most of them are male.
+passengers who paid $26 to $512, more than half are male.
+
+In class2: passengers who paid $0 to $8.66, all of them are male.
+passengers who paid $8.66 to $26, more than half are male.
+passengers who paid $26 to $512, male and female proportion is 50/50.
+
+In class3: passengers who paid $0 to $8.66, almost out of 300 passengers
+nearly 235 are male.
+passengers who paid $8.66 to $26, and $26 to $512; more than half are male.
+
+```{r}
+seventh_plot_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(factor(Fare), fill = factor(Sex))) +
+  geom_bar(position = 'fill') +
+  facet_wrap(~ Pclass)
+```
+
+# Observation:
+
+# In class1: 
+Passenger who paid $0 to $8.66: all of them are male.
+Passenger who paid $8.66 to $26: almost 65% of them are male. 
+Passenger who paid $26 to $512: there are almost same amount of male and female
+passenger.
+
+
+```{r}
+seventh_table_of_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  count(Pclass, Fare, Sex) %>%
+  spread(Sex, n) %>%
+  mutate(`female` =
+           case_when(
+             is.na(`female`) ~ 0L,
+             !is.na(`female`) ~ `female`
+           )) %>%
+  mutate(prop_female = (`female` / (`female` + `male`) * 100)) %>% 
+  mutate(prop_male = (`male` / (`female` + `male`) * 100))
+```
+
+# Observation:
+
+# In class1: 
+Interval [$0 to $8.66]: Proportion of male is 100%, proportion of female is 0%.
+Interval ($8.66 to $26]: Proportion of male is 66.7%, proportion of female is 33.3%
+Interval ($26 to $512]: Proportion of male is 54.9%, proportion of female is 45.1%
+
+# In class2: 
+Interval [$0 to $8.66]: Proportion of male is 100%, proportion of female is 0%.
+Interval ($8.66 to $26]: Proportion of male is 59%, proportion of female is 41%
+Interval ($26 to $512]: Proportion of male is 51.3%, proportion of female is 48.7%
+
+# In class3: 
+Interval [$0 to $8.66]: Proportion of male is 81.8%, proportion of female is 18.2%.
+Interval ($8.66 to $26]: Proportion of male is 51%, proportion of female is 49%
+Interval ($26 to $512]: Proportion of male is 61.5%, proportion of female is 38.5%
+
+###########Comparison#########
+###Fare with Gender & Class###
+##############################
+
+I want to create graphs for all three classes and break the fare in three fare
+interval, and will observe the relation between gender and class with fare.
+```{r}
+eighth_plot_count <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(factor(Sex), fill = factor(Fare))) +
+  geom_bar() +
+  facet_wrap(~ Pclass)
+```
+
+# Observation
+
+# In class1:
+Almost all the female and male passenger paid the highest fare to get in to
+class1. Also there are a small portion of male passengers who paid $0 to $8.66
+and $8.66 to $26 and still got in to class1.
+
+# In class2:
+There are nearly 20 male and female passengers whose fare is in the highest
+interval but got in to class2. There are large portion of male and female
+passenger whose fare interval is $8.66 to $26. Also a small portion of male
+passenger got in to class2 by paying the least fare interval.
+
+# In class3:
+We see that there is a decent number of passengers who paid the fare from
+highest interval but got in class3. There is same amount of male and female
+passengers in class3 who paid the fare from $8.66 to $26. Almost 4 times more
+male than female in class3 whose fare interval is $0 to $8.66.
+
+
+```{r}
+eighth_plot_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  ggplot(aes(factor(Sex), fill = factor(Fare))) +
+  geom_bar(position = 'fill') +
+  facet_wrap(~ Pclass)
+```
+
+# Observation:
+The higher the fare that people paid, the higher the class they are in.
+However, there are passengers who paid the least amount for fare, and they are
+in higher class.
+
+
+```{r}
+eighth_table_of_prop <-
+  train %>%
+  mutate(Fare = cut_number(Fare, 3)) %>%
+  count(Sex, Fare, Pclass) %>%
+  spread(Fare, n) %>% 
+  mutate(`[0,8.66]` = 
+           case_when(
+             is.na(`[0,8.66]`) ~ 0L,
+             !is.na(`[0,8.66]`) ~ `[0,8.66]`
+           )) %>%
+  mutate(prop_fare1 = (`[0,8.66]` / (`[0,8.66]` + `(8.66,26]` + `(26,512]`)) * 100) %>%
+  mutate(prop_fare2 = (`(8.66,26]` / (`[0,8.66]` + `(8.66,26]` + `(26,512]`)) * 100) %>%
+  mutate(prop_fare3 = (`(26,512]` / (`[0,8.66]` + `(8.66,26]` + `(26,512]`)) * 100)
+```
+
+# Observation:
+# In class1: 
+female passenger who paid the fare between $0 to $8.66 is 0% and male 4.92%
+female passenger who paid the fare between $8.66 to $26 is 2.13% and male 3.28%
+female passenger who paid the fare between $26 to $512 is 97.9% and male 91.8%
+
+# In class2: 
+female passenger who paid the fare between $0 to $8.66 is 0% and male 5.56%
+female passenger who paid the fare between $8.66 to $26 is 75% and male 75.9%
+female passenger who paid the fare between $26 to $512 is 25% and male 18.5%
+
+# In class3: 
+female passenger who paid the fare between $0 to $8.66 is 37.5% and male 69.7%
+female passenger who paid the fare between $8.66 to $26 is 48.6% and male 21%
+female passenger who paid the fare between $26 to $512 is 13.9% and male 9.22%
+
+# End of code
